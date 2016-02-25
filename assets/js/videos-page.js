@@ -1,10 +1,10 @@
 angular.module('brushfire_videosPage', [])
   .config(['$sceDelegateProvider', function($sceDelegateProvider) {
-  $sceDelegateProvider.resourceUrlWhitelist([
-    'self',
-    '*://www.youtube.com/**'
-  ]);
-}]);
+    $sceDelegateProvider.resourceUrlWhitelist([
+      'self',
+      '*://www.youtube.com/**'
+    ]);
+  }]);
 
 angular.module('brushfire_videosPage').controller('PageCtrl', [
   '$scope', '$http',
@@ -20,22 +20,35 @@ angular.module('brushfire_videosPage').controller('PageCtrl', [
     $scope.submitVideosError = false;
 
     // Get the existing videos.
-    $http.get('/video')
-      .then(function onSuccess(sailsResponse) {
-        $scope.videos = sailsResponse.data;
-      })
-      .catch(function onError(sailsResponse) {
+    io.socket.get('/video', function whenServerResponds(data, JWR) {
+      $scope.videosLoading = false;
 
-        if (sailsResponse.data.status === '404') {
-          return;
-        }
+      if (JWR.statusCode >= 400) {
+        $scope.submitVideosError = true;
+        console.log('something bad happened');
+        return;
+      }
+      $scope.videos = data;
 
-        console.log("An unexpected error occurred: " + sailsResponse.data.statusText);
+      // Apply the changes to the DOM
+      // (we have to do this since `io.socket.get` is not a
+      // angular-specific magical promisy-thing)  
+      $scope.$apply();
 
-      })
-      .finally(function eitherWay() {
-        $scope.videosLoading = false;
+      io.socket.on('video', function whenAVideoIsCreatedUpdatedOrDestroyed(event) {
+
+        // Add the new video to the DOM
+        $scope.videos.unshift({
+          title: event.data.title,
+          src: event.data.src,
+        });
+
+        // Apply the changes to the DOM
+        // (we have to do this since `io.socket.get` is not a
+        // angular-specific magical promisy-thing)
+        $scope.$apply();
       });
+    });
 
     ///////////////////////////////////////////////////////////////
     // SET UP LISTENERS FOR DOM EVENTS
@@ -94,22 +107,25 @@ angular.module('brushfire_videosPage').controller('PageCtrl', [
 
       // First, show a loading state
       // (also disables form submission)
-      $scope.busySubmittingVideo = true;
-
-      $http.post('/video', {
+      io.socket.post('/video', { 
         title: _newVideo.title,
         src: _newVideo.src
-      })
-      .then(function onSuccess(sailsResponse) {
+      }, function whenServerResponds(data, JWR) {
+        $scope.videosLoading = false;
+        if (JWR.statusCode >= 400) { 
+          console.log('something bad happened');
+          return;
+        }
         $scope.videos.unshift(_newVideo);
-      })
-      .catch(function onError(sailsResponse) {
-        console.log("An unexpected error occurred: " + sailsResponse.data.statusText);
-      })
-      .finally(function eitherWay() {
+
+        // Hide the loading state
+        // (also re-enables form submission)
         $scope.busySubmittingVideo = false;
+
+        //Clear out form inputs
         $scope.newVideoTitle = '';
         $scope.newVideoSrc = '';
+        $scope.$apply(); 
       });
     };
   }

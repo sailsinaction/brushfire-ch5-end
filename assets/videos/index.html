@@ -68,8 +68,7 @@
           {{busySubmittingVideo?'Submitting...':'Submit Video'}}
           <span ng-if="submitVideosError">An error has occurred!</span>
         </button>
-        <p class="error" ng-if="submitVideosError">Please refresh the page and try again.
-             If that doesn't work, call Chad!</p>
+        <p class="error" ng-if="submitVideosError">Please refresh the page and try again. If that doesn't work, call Chad!</p>
     </form>
   </section>
 
@@ -77,6 +76,7 @@
   <section class="the-list-of-videos col-md-12">
     <div class="loading" ng-if="videosLoading">Loading videos...</div>
     <div ng-if="!videosLoading && videos.length===0 && !submitVideosError">There are no videos, please add one!</div>
+    <p class="error" ng-if="submitVideosError">Please refresh the page and try again. If that doesn't work, call Chad!</p>
     <ul>
       <li class="video" ng-repeat="video in videos" ng-if="!videosLoading">
         <h2>{{video.title}}</h2>

@@ -1,8 +1,8 @@
 {
-  "name": "brushfire-ch4-start",
+  "name": "brushfire-ch4-end",
   "private": true,
   "version": "0.0.0",
-  "description": "Sails in Action - Start of Chapter 4 Source Files",
+  "description": "Sails in Action - End of Chapter 4 Source Files",
   "keywords": [],
   "dependencies": {
     "ejs": "2.3.4",
@@ -31,7 +31,7 @@
   "main": "app.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/jgalt/start-of-chap-4.git"
+    "url": "git://github.com/jgalt/end-of-chap-4.git"
   },
   "author": "Mike McNeil/Irl Nathan",
   "license": "MIT"
