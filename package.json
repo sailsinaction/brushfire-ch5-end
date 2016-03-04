@@ -1,8 +1,8 @@
 {
-  "name": "brushfire-ch4-end",
+  "name": "brushfire-ch5-end",
   "private": true,
   "version": "0.0.0",
-  "description": "Sails in Action - End of Chapter 4 Source Files",
+  "description": "Sails in Action - End of Chapter 5 Source Files",
   "keywords": [],
   "dependencies": {
     "ejs": "2.3.4",
@@ -19,6 +19,7 @@
     "grunt-sails-linker": "~0.10.1",
     "grunt-sync": "0.2.4",
     "include-all": "~0.1.6",
+    "machinepack-youtube": "^2.2.0",
     "rc": "1.0.1",
     "sails": "~0.12.1",
     "sails-disk": "~0.10.9",
@@ -31,7 +32,7 @@
   "main": "app.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/jgalt/end-of-chap-4.git"
+    "url": "git://github.com/jgalt/end-of-chap-5.git"
   },
   "author": "Mike McNeil/Irl Nathan",
   "license": "MIT"

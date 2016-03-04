@@ -11,7 +11,51 @@
 
 module.exports.bootstrap = function(cb) {
 
-  // It's very important to trigger this callback method when you are finished
-  // with the bootstrap!  (otherwise your server will never lift, since it's waiting on the bootstrap)
-  cb();
+  Video.count().exec(function(err, numVideos) {
+    if (err) {
+      return cb(err);
+    }
+
+    if (numVideos > 0) {
+      console.log('Existing video records: ', numVideos)
+      return cb();
+    }
+    var Youtube = require('machinepack-youtube');
+
+    // List Youtube videos which match the specified search query.
+    Youtube.searchVideos({
+      query: 'grumpy cat',
+      apiKey: 'AIzaSyDNuOChtnL1SuidLwFMyicTOq5e-t-MOTU',
+      limit: 15,
+    }).exec({
+      // An unexpected error occurred.
+      error: function(err) {
+        console.log('an error: ', err);
+        return cb(err);
+
+      },
+      // OK.
+      success: function(foundVideos) {
+
+        // Transform the incoming foundVideos to match the front end expected format
+        _.each(foundVideos, function(video) { 
+          video.src = 'https://www.youtube.com/embed/' + video.id; 
+          delete video.description; 
+          delete video.publishedAt; 
+          delete video.id; 
+          delete video.url; 
+        });
+
+        // Add the transformed video records to the video model
+        Video.create(foundVideos).exec(function(err, videoRecordsCreated) {
+          if (err) {
+            return cb(err);
+          }
+
+          console.log(videoRecordsCreated); 
+          return cb();
+        });
+      },
+    });
+  });
 };
