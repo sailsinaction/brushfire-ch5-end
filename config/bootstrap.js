@@ -25,7 +25,7 @@ module.exports.bootstrap = function(cb) {
     // List Youtube videos which match the specified search query.
     Youtube.searchVideos({
       query: 'grumpy cat',
-      apiKey: 'AIzaSyDNuOChtnL1SuidLwFMyicTOq5e-t-MOTU',
+      apiKey: sails.config.google.apiKey,
       limit: 15,
     }).exec({
       // An unexpected error occurred.
